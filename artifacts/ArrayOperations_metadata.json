@@ -1,0 +1,78 @@
+{
+	"compiler": {
+		"version": "0.8.34+commit.80d5c536"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "mainNumbers",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "modifyMemoryCopy",
+				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/ArrayOperations.sol": "ArrayOperations"
+		},
+		"evmVersion": "osaka",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/ArrayOperations.sol": {
+			"keccak256": "0xb6e74e9853a8acb6fea4d58548159daec16fdecf639c78bc9c7e6ad5780777fb",
+			"license": "GPL-3.0",
+			"urls": [
+				"bzz-raw://5735237940066c753ef376ccc7ca9e713c8bd7a1d341f8fb2f54fb5bf69c5a2f",
+				"dweb:/ipfs/QmWaY7qbuFaneis9ejVGJJP2c8etL2SNNNAZLhCKW4UYXZ"
+			]
+		}
+	},
+	"version": 1
+}

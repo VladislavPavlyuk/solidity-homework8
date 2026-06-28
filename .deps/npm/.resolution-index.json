@@ -1,0 +1,66 @@
+{
+  "contracts/1_Storage.sol": {
+    "__sources__": {
+      "contracts/1_Storage.sol": {
+        "content": "// SPDX-License-Identifier: GPL-3.0\npragma solidity >=0.8.2 <0.9.0;\n\n// Створюємо контракт StudentRegistry [cite: 3]\ncontract StudentRegistry {\n\n    // 1. Створюємо структуру Student [cite: 4, 5]\n    struct Student {\n        string name; // [cite: 7]\n        uint age;    // [cite: 8]\n    }\n\n    // 2. Створюємо динамічний масив студентів у storage [cite: 9]\n    Student[] public students;\n\n    // 3. Функція додавання нового студента [cite: 11]\n    // Використовуємо calldata для _name, оскільки рядок лише читається і не змінюється (економить газ) [cite: 14, 77]\n    function addStudent(string calldata _name, uint _age) public {\n        students.push(Student(_name, _age));\n    }\n\n    // 3. Функція, яка повертає інформацію про студента за індексом [cite: 12]\n    // Модифікатор view, бо функція тільки читає стан [cite: 79]\n    // Повертає структуру за допомогою memory, оскільки створюється тимчасова копія для виведення [cite: 14, 78]\n    function getStudent(uint _index) public view returns (Student memory) {\n        return students[_index];\n    }\n\n    // 3. Функція повертає кількість студентів [cite: 13]\n    // Модифікатор view, бо ми читаємо довжину масиву зі стану [cite: 79]\n    function studentsCount() public view returns (uint) {\n        return students.length;\n    }\n}",
+        "file": "contracts/1_Storage.sol"
+      }
+    }
+  },
+  "contracts/ArrayOperations.sol": {
+    "__sources__": {
+      "contracts/ArrayOperations.sol": {
+        "content": "// SPDX-License-Identifier: GPL-3.0\r\npragma solidity >=0.8.2 <0.9.0;\r\n\r\ncontract ArrayOperations {\r\n\r\n    // 2. Створюємо масив чисел зі стартовими значеннями \r\n    uint[] public mainNumbers = [5, 10, 15];\r\n\r\n    // 3. Додаємо функцію для роботи з пам'яттю \r\n    function modifyMemoryCopy() public view returns (uint[] memory) {\r\n        // Копіюємо масив зі стану (storage) у тимчасову змінну memory \r\n        uint[] memory copyNumbers = mainNumbers;\r\n        \r\n        // Змінюємо значення елементів локальної копії \r\n        for (uint i = 0; i < copyNumbers.length; i++) {\r\n            copyNumbers[i] = copyNumbers[i] + 100; // Зміна відбувається лише в пам'яті \r\n        }\r\n        \r\n        // Повертаємо змінений масив \r\n        return copyNumbers; \r\n    }\r\n    \r\n    // 4. Вихідний масив \"mainNumbers\" у блокчейні залишається незмінним: [5, 10, 15]\r\n}",
+        "file": "contracts/ArrayOperations.sol"
+      }
+    }
+  },
+  "contracts/Calculator.sol": {
+    "__sources__": {
+      "contracts/Calculator.sol": {
+        "content": "// SPDX-License-Identifier: GPL-3.0\r\npragma solidity >=0.8.2 <0.9.0;\r\n\r\ncontract Calculator {\r\n\r\n    // 2. Реалізуємо функцію sumArray \r\n    // Видимість external, оскільки функція призначена для виклику лише ззовні \r\n    // Модифікатор pure, бо функція не зчитує змінні стану контракту \r\n    function sumArray(uint[] calldata _arr) external pure returns (uint) { // 3. Приймає масив через calldata \r\n        uint sum = 0;\r\n        \r\n        // Обчислюємо суму всіх елементів \r\n        for (uint i = 0; i < _arr.length; i++) {\r\n            sum += _arr[i];\r\n        }\r\n        \r\n        return sum; // Повертаємо отриманий результат \r\n    }\r\n}",
+        "file": "contracts/Calculator.sol"
+      }
+    }
+  },
+  "contracts/Library.sol": {
+    "__sources__": {
+      "contracts/Library.sol": {
+        "content": "// SPDX-License-Identifier: GPL-3.0\r\npragma solidity >=0.8.2 <0.9.0;\r\n\r\ncontract Library {\r\n\r\n    struct Book {\r\n        string title;   \r\n        string author;   \r\n        uint year;       \r\n        bool available;  \r\n    }\r\n\r\n    // Динамічний масив для зберігання книг у storage\r\n    Book[] public books;\r\n\r\n    // 3. Функція додавання книги\r\n    // Використовуємо calldata для текстових параметрів, які лише зчитуються (економія газу) \r\n    function addBook(string calldata _title, string calldata _author, uint _year) public { \r\n        books.push(Book(_title, _author, _year, true));\r\n    }\r\n\r\n    // 3. Функція отримання інформації про книгу \r\n    // Модифікатор view (тільки читання), повертає структуру через memory \r\n    function getBook(uint _index) public view returns (Book memory) {\r\n        return books[_index];\r\n    }\r\n\r\n    // 3. Функція зміни року видання \r\n    // Використовуємо storage, оскільки нам потрібно безпосередньо ОНОВИТИ дані в блокчейні \r\n    function updateYear(uint _index, uint _newYear) public { \r\n        Book storage bookToModify = books[_index]; // беремо пряме посилання на елемент масиву \r\n        bookToModify.year = _newYear;\r\n    }\r\n\r\n    // 3. Функція зміни статусу доступності \r\n    // Використовуємо storage для прямого запису змін на диск смартконтракту \r\n    function updateAvailability(uint _index, bool _status) public { \r\n        Book storage bookToModify = books[_index];\r\n        bookToModify.available = _status;\r\n    }\r\n\r\n    // 3. Функція отримання кількості книг \r\n    // Модифікатор view, повертає звичайний тип uint \r\n    function getBooksCount() public view returns (uint) {\r\n        return books.length;\r\n    }\r\n\r\n    // 3. Функція отримання всіх книг одночасно\r\n    // Модифікатор view, повертає весь динамічний масив структур за допомогою модифікатора memory \r\n    function getAllBooks() public view returns (Book[] memory) {\r\n        return books;\r\n    }\r\n}",
+        "file": "contracts/Library.sol"
+      }
+    }
+  },
+  "contracts/NumberStorage.sol": {
+    "__sources__": {
+      "contracts/NumberStorage.sol": {
+        "content": "// SPDX-License-Identifier: GPL-3.0\r\npragma solidity >=0.8.2 <0.9.0;\r\n\r\ncontract NumberStorage {\r\n    \r\n    // 2. Створюємо динамічний масив чисел \r\n    uint[] public numbers;\r\n\r\n    // 3. Функція заповнення масиву кількома числами \r\n    function fillArray() public {\r\n        numbers.push(10);\r\n        numbers.push(20);\r\n        numbers.push(30);\r\n    }\r\n\r\n    // 4. Створюємо функцію подвоєння значень \r\n    function doubleValues() public {\r\n        // 5. Створюємо локальну змінну типу storage, яка посилається на глобальний масив \r\n        uint[] storage myNumbersStorage = numbers;\r\n        \r\n        // Збільшуємо кожен елемент масиву у 2 рази \r\n        for (uint i = 0; i < myNumbersStorage.length; i++) {\r\n            myNumbersStorage[i] = myNumbersStorage[i] * 2; // Зміни записуються прямо в стан блокчейну \r\n        }\r\n    }\r\n    // 6. Після виклику цієї функції, якщо перевірити масив через публічний \"numbers\", значення зміняться на 20, 40, 60 \r\n}",
+        "file": "contracts/NumberStorage.sol"
+      }
+    }
+  },
+  "contracts/Rectangle.sol": {
+    "__sources__": {
+      "contracts/Rectangle.sol": {
+        "content": "// SPDX-License-Identifier: GPL-3.0\r\npragma solidity >=0.8.2 <0.9.0;\r\n\r\ncontract Rectangle {\r\n\r\n    // Змінні стану \r\n    uint public width;\r\n    uint public height;\r\n\r\n    // Функція для встановлення розмірів (змінює стан, тому без view/pure)\r\n    function setDimensions(uint _width, uint _height) public {\r\n        width = _width;\r\n        height = _height;\r\n    }\r\n\r\n    // 2. Функція area() \r\n    // Видимість: public (доступна звідусіль) \r\n    // Модифікатор: view, тому що вона ЧИТАЄ змінні стану width та height \r\n    function area() public view returns (uint) { \r\n        return width * height;\r\n    }\r\n\r\n    // 2. Функція perimeter() \r\n    // Видимість: external (виклик тільки ззовні контракту, економить газ) \r\n    // Модифікатор: view, оскільки також зчитує стан блокчейну \r\n    function perimeter() external view returns (uint) { \r\n        return 2 * (width + height);\r\n    }\r\n\r\n    // 2. Функція isSquare() \r\n    // Видимість: public \r\n    // Модифікатор: pure, тому що вона взагалі НЕ читає і НЕ змінює стан контракту, а працює лише з вхідними параметрами \r\n    function isSquare(uint _w, uint _h) public pure returns (bool) { \r\n        return _w == _h;\r\n    }\r\n}",
+        "file": "contracts/Rectangle.sol"
+      }
+    }
+  },
+  "contracts/StudentRegistry.sol": {
+    "__sources__": {
+      "contracts/StudentRegistry.sol": {
+        "content": "// SPDX-License-Identifier: GPL-3.0\npragma solidity >=0.8.2 <0.9.0;\n\ncontract StudentRegistry {\n\n    // 1. Створюємо структуру Student\n    struct Student {\n        string name;\n        uint age;   \n    }\n\n    // 2. Створюємо динамічний масив студентів у storage \n    Student[] public students;\n\n    // 3. Функція додавання нового студента \n    // Використовуємо calldata для _name, оскільки рядок лише читається і не змінюється (економить газ) \n    function addStudent(string calldata _name, uint _age) public {\n        students.push(Student(_name, _age));\n    }\n\n    // 3. Функція, яка повертає інформацію про студента за індексом \n    // Модифікатор view, бо функція тільки читає стан \n    // Повертає структуру за допомогою memory, оскільки створюється тимчасова копія для виведення\n    function getStudent(uint _index) public view returns (Student memory) {\n        return students[_index];\n    }\n\n    // 3. Функція повертає кількість студентів \n    // Модифікатор view, бо ми читаємо довжину масиву зі стану \n    function studentsCount() public view returns (uint) {\n        return students.length;\n    }\n}",
+        "file": "contracts/StudentRegistry.sol"
+      }
+    }
+  },
+  "contracts/Warehouse.sol": {
+    "__sources__": {
+      "contracts/Warehouse.sol": {
+        "content": "// SPDX-License-Identifier: GPL-3.0\r\npragma solidity >=0.8.2 <0.9.0;\r\n\r\ncontract Warehouse {\r\n\r\n    struct Product {\r\n        string name;  \r\n        uint quantity; \r\n    }\r\n\r\n    // 3. Створюємо динамічний масив товарів \r\n    Product[] public products;\r\n\r\n    constructor() {\r\n        // Додаємо стартовий товар для тесту\r\n        products.push(Product(\"Laptop\", 10));\r\n    }\r\n\r\n    // 4. Функція, яка змінює товар через змінну типу storage \r\n    function updateWithStorage(uint _index, uint _newQty) public {\r\n        Product storage prod = products[_index]; // створює вказівник на оригінал \r\n        prod.quantity = _newQty; // ЗМІНИ ЗБЕРЕЖУТЬСЯ в блокчейні \r\n    }\r\n\r\n    // 4. Функція, яка працює з копією товару через memory \r\n    function updateWithMemory(uint _index, uint _newQty) public view returns (Product memory) {\r\n        Product memory prod = products[_index]; // створює незалежну копію в пам'яті \r\n        prod.quantity = _newQty; // Зміна відбувається ТІЛЬКИ в пам'яті \r\n        return prod; // Повертає змінену тимчасову копію, але оригінал в масиві залишається старим \r\n    }\r\n    \r\n    // 5. РЕЗУЛЬТАТ ПОРІВНЯННЯ: updateWithStorage змінює стан назавжди. updateWithMemory залишає базу даних незмінною.\r\n}",
+        "file": "contracts/Warehouse.sol"
+      }
+    }
+  }
+}
